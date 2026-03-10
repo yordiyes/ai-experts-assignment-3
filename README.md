@@ -1,64 +1,116 @@
 # AI Experts Assignment (Python)
 
-This assignment evaluates your ability to:
+This assignment demonstrates the ability to:
 
-- set up a small Python project to run reliably (locally + in Docker),
-- pin dependencies for reproducible installs,
-- write focused tests to reproduce a bug,
-- implement a minimal, reviewable fix.
+* run a Python project reliably (locally and in Docker),
+* pin dependencies for reproducible environments,
+* write tests that expose a real bug,
+* apply a minimal and reviewable fix.
 
-## What you will do
+---
 
-### 1) Dockerfile (required)
+## Project Tasks
 
-Create a `Dockerfile` so the project can run the test suite in a non-interactive, CI-style environment.
+### 1. Dockerfile
 
-Requirements:
+A `Dockerfile` is provided so the test suite can run in a clean, non-interactive environment.
 
-- requirements.txt exists and is used during build (pip install -r requirements.txt)
-- pytest must be included/pinned in requirements.txt
-- The image must run tests by default (use: `CMD ["python", "-m", "pytest", "-v"]`).
-- The build must install dependencies from `requirements.txt`.
+Requirements satisfied:
 
-### 2) requirements.txt (required)
+* Dependencies are installed from `requirements.txt`
+* Dependencies are pinned
+* Tests run automatically using pytest
 
-Create a `requirements.txt` with pinned versions, using this format:
+---
 
-- `package==x.y.z`
+### 2. requirements.txt
 
-### 3) README updates (required)
+All dependencies are pinned using the format:
 
-Update this README to include:
+```
+package==x.y.z
+```
 
-- how to run the tests locally,
-- how to build and run tests with Docker.
+This ensures reproducible installations across environments.
 
-### 4) Find + fix a bug (required)
+---
 
-There is a bug somewhere in this repository.
+### 3. Bug Identification and Fix
 
-Your tasks:
+A bug was identified in the `Client.request()` method where OAuth tokens stored as dictionaries were not handled correctly.
 
-- Identify the bug.
-- Apply the smallest possible fix to make the tests pass.
-- Keep the change minimal and reviewable (no refactors).
+The refresh logic only checked for missing tokens or expired `OAuth2Token` objects. When the token was stored as a dictionary, the expiration check was skipped and the authorization header was never set.
 
-## Constraints
+The fix ensures that dictionary tokens are treated as invalid tokens and refreshed properly.
 
-- Keep changes minimal and reviewable.
-- Do not refactor unrelated code.
-- Do not introduce extra tooling unless required.
-- You may add tests and the smallest code change needed to fix the bug.
+---
 
-### 5) EXPLANATION.md (required)
+## Running Tests Locally
 
-Create `EXPLANATION.md` (max 250 words) containing:
+1. Create a virtual environment
 
-- **What was the bug?**
-- **Why did it happen?**
-- **Why does your fix solve it?**
-- **One realistic case / edge case your tests still don’t cover**
+```
+python -m venv venv
+```
 
-## Submission
+2. Activate the environment
 
-- Submit a public GitHub repository URL containing your solution to the Google form link provided.
+Windows:
+
+```
+venv\Scripts\activate
+```
+
+3. Install dependencies
+
+```
+pip install -r requirements.txt
+```
+
+4. Run the tests
+
+```
+pytest -v
+```
+
+---
+
+## Running Tests with Docker
+
+### Build the Docker image
+
+```
+docker build -t ai-experts-assignment .
+```
+
+### Run the tests
+
+```
+docker run ai-experts-assignment
+```
+
+---
+
+## Repository Structure
+
+```
+app/
+    http_client.py
+    tokens.py
+
+tests/
+    test_http_client.py
+
+Dockerfile
+requirements.txt
+README.md
+EXPLANATION.md
+```
+
+---
+
+## Notes
+
+* The fix was implemented with the smallest possible code change.
+* No unrelated refactoring was introduced.
+* All existing tests pass successfully.
